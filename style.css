@@ -1,3 +1,10 @@
+body {
+    max-width: 60vw;
+    margin: 0 auto; /* 0 margin on top and bottom, auto on sides to make it centered */
+    margin-bottom: 50px;
+    padding: 1rem; /* in case there is no side margin */
+}
+
 h1, h2, h3, h4 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     border-bottom: 2px solid #333;
@@ -23,8 +30,30 @@ p, strong, ul {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.caption {
+    color: gray;
+    font-style: italic;
+    margin: 0 auto;
+    text-align: center;
+}
+
 img {
-    height: 360px;
-    width: 540px;
+    height: 180px;
+    width: 270px;
     display: block;
+    margin: 0 auto;
+}
+
+@media (min-width: 580px) {
+    img {
+        height: 270px;
+        width: 405px;
+    }
+}
+
+@media (min-width: 850px) {
+    img {
+        height: 360px;
+        width: 540px;
+    }
 }
