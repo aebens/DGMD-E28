@@ -1,13 +1,43 @@
+:root {
+    --ld-bkgd: light-dark(#fafbfc, #0d1117);
+    --ld-text: light-dark(#24292f, #f0f6fc);
+    --exp-text: light-dark(#2d3748, #e2e8f0);
+    --exp-bkgd: light-dark(#e6f3ff, #2a4365);
+}
+
+html {
+    color-scheme: light dark;
+}
+
 body {
     max-width: 60vw;
     margin: 0 auto; /* 0 margin on top and bottom, auto on sides to make it centered */
     margin-bottom: 50px;
     padding: 1rem; /* in case there is no side margin */
+    background-color: var(--ld-bkgd);
+    color: var(--ld-text);
+}
+
+#experience {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.experience-card {
+    border: 2px solid var(--exp-text);
+    padding: 20px;
+    background-color: var(--exp-bkgd);
+    color: var(--exp-text);
 }
 
 h1, h2, h3, h4 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid var(--ld-text);
+}
+
+.experience-card h1, .experience-card h2, .experience-card h3, .experience-card h4 {
+    border-bottom: 2px solid var(--exp-text);
 }
 
 h1 {
@@ -31,7 +61,7 @@ p, strong, ul {
 }
 
 .caption {
-    color: gray;
+    /* color: gray; */
     font-style: italic;
     margin: 0 auto;
     text-align: center;
