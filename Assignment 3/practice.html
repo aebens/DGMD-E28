@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+    <head>
+        <meta charset="UTF-8">
+        <title>Practice Problems</title>
+    </head>
+
+    <body>
+        <h1>Problem 1</h1>
+        <div id="results"></div>
+        <script>
+            function timesTable(number) {
+                const n = Number(number);
+                for (let i = 1; i <= 12; i++) {
+                    document.write(n + " x " + i + " = " + (n * i)+"<br>");
+                }
+            };
+            const x = window.prompt("Provide a whole number","1");
+            timesTable(x);
+        </script>
+        <hr>
+        <h1>Problem 2</h1>
+        <div id="results2">
+            <script>
+                function fahr2cels(ftemp) {
+                    const temp = (ftemp - 32) * 5/9;
+                    document.write("Fahrenheit: " + ftemp + "° = " + temp + "° Celsius" +"<br>");
+                }
+                fahr2cels(32);
+                fahr2cels(41);
+                fahr2cels(95);
+                fahr2cels(212);
+            </script>
+        </div>
+    </body>
+</html>
