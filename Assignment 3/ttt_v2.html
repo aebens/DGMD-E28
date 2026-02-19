@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Tic Tac Toe</title>
+
+    <style>
+        body {
+            margin: 50px 50px;
+            padding: 1 rem;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 5px;
+            max-width: 310px;
+            margin-bottom: 30px;
+        }
+
+        .square {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .square:hover {
+            background-color: #c9afcf;
+        }
+
+        .status {
+            margin-bottom: 20px;
+            font-size: 18px;
+            border: 1px solid #000;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Tic Tac Toe Game</h1>
+    <p>For more information on the game, please see the <a href="https://en.wikipedia.org/wiki/Tic-tac-toe" target="_blank">Wikipedia entry</a>.</p>
+    <div class="status">O's Turn</div>
+
+    <div class="board">
+        <script>
+            const NUM_SQUARES = 9;
+            for (i=0; i<NUM_SQUARES; i++)
+                {
+                id = "sq"+i;
+                document.write( "<div class='square' id='" + id + "'></div>" );
+                }
+            document.getElementById("sq1").innerHTML = "X";
+            document.getElementById("sq2").innerHTML = "X";
+            document.getElementById("sq8").innerHTML = "O";
+        </script>
+    </div>
+
+    <button>Start Game</button>
+</body>
+
+
+
+</html>
