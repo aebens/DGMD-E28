@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+    <head>
+        <title>Tic Tac Toe</title>
+
+        <style>
+
+            body {
+                margin: 50px 50px;
+                padding: 1 rem;
+                background: #FAFAF8;
+                color: #1A1917;
+            }
+
+            h1 {
+                color: #B45309;
+                font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                border-bottom: 1px solid #C9C6BD;
+            }
+
+            a {
+                color: #B45309;
+            }
+
+            .board {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 5px;
+                max-width: 310px;
+                margin: 0 auto 30px;
+                justify-items: center;
+            }
+
+            .square {
+                width: 100px;
+                height: 100px;
+                border: 1px solid #a19e95;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 48px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: #5C5A53;
+            }
+
+            .square:hover {
+                background-color: #f5b27eda;
+            }
+
+            .status {
+                margin: 0 auto 20px;
+                display: flex;
+                width: 300px;
+                padding: 10px;
+                font-size: 18px;
+                border: 1px solid #a19e95;
+                justify-content: center;
+                font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                font-size: 24px;
+            }
+
+            button {
+                display: flex;
+                margin: 0 auto;
+            }
+        </style>
+
+        <script>
+            window.onload = function(){
+                document.querySelector("button").onclick = start;
+                
+                function start(){
+                    document.querySelectorAll('.square')
+                    .forEach(sq => {
+                       sq.innerHTML = ""; 
+                    });
+                    var turn = 1;
+                    if (Math.ceil(Math.random()*10) <=5)
+                        var marker = "X";
+                    else
+                        var marker = "O";
+
+                    var status = marker+"'s turn";
+                    document.querySelector('.status').innerHTML = status;
+                    document.querySelectorAll('.square')
+                    .forEach(sq => {
+                       sq.onclick = mark; 
+                    });
+
+                    function mark(){
+                        if (marker == "X" && this.innerHTML ==""){
+                            this.innerHTML=marker;
+                            marker = "O";
+                        }
+                        else if (marker == "O" && this.innerHTML ==""){
+                            this.innerHTML=marker;
+                            marker ="X";
+
+                        }
+                        status = marker+"'s Turn";
+                        document.querySelector('.status').innerHTML = status;
+                        
+                        turn++;
+                    } 
+                }
+                
+                 
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1>Tic Tac Toe Game</h1>
+        <p>For more information on the game, please see the <a href="https://en.wikipedia.org/wiki/Tic-tac-toe" target="_blank">Wikipedia entry</a>.</p>
+        <div class="status">Click Start Game to Play!</div>
+
+        <div class="board">
+            <script>
+                
+                const NUM_SQUARES = 9;
+                for (i=0; i<NUM_SQUARES; i++)
+                    {
+                    id = "sq"+i;
+                    document.write( "<div class='square' id='" + id + "'></div>" );
+                    }             
+                
+            </script>
+        </div>
+
+        <button>Start Game</button>
+    </body>
+
+
+
+</html>
