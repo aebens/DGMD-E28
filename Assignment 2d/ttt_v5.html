@@ -70,23 +70,29 @@
                 document.querySelector("button").onclick = start;
                 
                 function start(){
+
+                    // clear board at beginning
                     document.querySelectorAll('.square')
                     .forEach(sq => {
                        sq.innerHTML = ""; 
                     });
                     var turn = 1;
+
+                    // decide who goes first at random
                     if (Math.ceil(Math.random()*10) <=5)
                         var marker = "X";
                     else
                         var marker = "O";
 
+                    // update status for who goes first
                     var status = marker+"'s Turn";
                     document.querySelector('.status').innerHTML = status;
                     document.querySelectorAll('.square')
                     .forEach(sq => {
                        sq.onclick = mark; 
                     });
-
+                    
+                    // create mark X or O and update status/turn
                     function mark(){
                         if (marker == "X" && this.innerHTML ==""){
                             this.innerHTML=marker;
@@ -101,10 +107,51 @@
                         document.querySelector('.status').innerHTML = status;
                         
                         turn++;
+
+                        checkWin();
                     } 
                 }
                 
-                 
+                // Beginning of game, load empty square if inner html is empty
+                function loadSquares(){
+                    var moves = [];
+                    document.querySelectorAll('.square')
+                    .forEach(sq => {
+                        if (sq.innerHTML !== "") {
+                            moves.push(sq.innerHTML);
+                        } else {
+                            moves.push("-");
+                        }
+                    });
+                    return moves;
+                }
+
+                // check if game is over or not
+                function checkWin(){
+                    var moves = loadSquares();
+                    var winConditions = [
+                        moves[0] + moves[1] + moves[2],  // top row
+                        moves[3] + moves[4] + moves[5],  // middle row
+                        moves[6] + moves[7] + moves[8],  // bottom row
+                        moves[0] + moves[3] + moves[6],  // left column
+                        moves[1] + moves[4] + moves[7],  // middle column
+                        moves[2] + moves[5] + moves[8],  // right column
+                        moves[0] + moves[4] + moves[8],  // left diagonal
+                        moves[2] + moves[4] + moves[6]   // right diagonal
+                    ];
+                    
+                    // checks for win and turns off clicking if game is over
+                    if (winConditions.includes("XXX")) {
+                        document.querySelector('.status').innerHTML = "X Wins!";
+                        document.querySelectorAll('.square').forEach(sq => { sq.onclick = null; });
+                    } else if (winConditions.includes("OOO")) {
+                        document.querySelector('.status').innerHTML = "O Wins!";
+                        document.querySelectorAll('.square').forEach(sq => { sq.onclick = null; });
+                    } else if (!moves.includes("-")) {
+                        document.querySelector('.status').innerHTML = "Stalemate!";
+                        document.querySelectorAll('.square').forEach(sq => { sq.onclick = null; });
+                    }
+                }                  
             }
         </script>
     </head>
