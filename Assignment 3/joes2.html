@@ -1,0 +1,117 @@
+<!Doctype html>
+
+    <head>
+        <title>Joe's Hotdogs</title>
+    </head>
+
+    <body>
+        <h1>Joe's Hotdogs</h1>
+        <script>
+            menu1 = [];
+            menu1["Hotdogs"] = 4;
+            menu1["Fries"] = 3.50;
+            menu1["Soda"] = 1.50;
+            menu1["Sauerkraut"] = 1;
+
+            document.write("<ul>");
+            for (var item in menu1){
+                document.write("<li>"+ item +": $" + menu1[item]+"</li>")
+            }
+            document.write("</ul>");
+
+
+            var menu = {
+                Hotdogs: 4,
+                Fries: 3.50,
+                Soda: 1.50,
+                Sauerkraut: 1
+            }
+
+            document.write("<ul>");
+            for (var item in menu){
+                document.write("<li>"+ item +": $" + menu[item]+"</li>")
+            }
+            document.write("</ul>");
+
+            function menuItem(name, amount){
+                this.item = name;
+                this.price = amount;
+            }
+
+            var menuItems = [
+                new menuItem("Hotdogs", 4),
+                new menuItem("Fries", 3.50),
+                new menuItem("Soda", 1.50),
+                new menuItem("Sauerkraut", 1)
+            ];
+
+            document.write("<ul>");
+            for (var i = 0; i < menuItems.length; i++) {
+                document.write("<li>"+ menuItems[i].item + ": $" + menuItems[i].price + "</li>");
+            }
+            document.write("</ul>");
+
+            // Ordering
+            document.write("<select id='menuSelect'>");
+            for (var item in menu) {
+                document.write("<option value='" + item + "'>" + item + "</option>");
+            }
+            document.write("</select>");
+
+            document.write("<br><button onclick='addToCart()'>Add to Cart</button>");
+            document.write("<div id='cart'></div>");
+            document.write("<button onclick='checkout()'>Checkout</button>");
+
+            var quantity = {};
+            for (var item in menu) {
+                quantity[item] = 0;
+            }
+
+            function addToCart() {
+                var selectedItem = document.getElementById('menuSelect').value;
+                quantity[selectedItem]++;
+                updateCart();
+            }
+
+            function updateCart() {
+                var cartDiv = document.getElementById('cart');
+
+                // Appends the html after loading
+                var html = "<ul>";
+                for (var item in quantity) {
+                    if (quantity[item] > 0) {
+                        html += "<li>" + item + " - " + quantity[item] + "</li>";
+                    }
+                }
+                
+                html += "</ul>";
+                cartDiv.innerHTML = html;
+            }
+
+            function checkout() {
+                var message = "Order Summary:\n";
+                var total = 0;
+
+                // Alert Summary
+                for (var item in quantity) {
+                    if (quantity[item] > 0) {
+                        var cost = quantity[item] * menu[item];
+                        message += item + " - " + quantity[item] + " ea = $" + cost.toFixed(2) + "\n";
+                        total += cost;
+                    }
+                }
+
+                message += "\nTotal: $" + total.toFixed(2);
+                alert(message);
+
+                // Clear cart
+                for (var item in quantity) {
+                    quantity[item] = 0;
+                }
+                updateCart();
+            }
+            
+        </script>
+    </body>
+
+</html>

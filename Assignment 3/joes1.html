@@ -1,0 +1,76 @@
+<!Doctype html>
+
+    <head>
+        <title>Joe's Hotdogs</title>
+    </head>
+
+    <body>
+        <h1>Joe's Hotdogs</h1>
+        <script>
+            menu1 = [];
+            menu1["Hotdogs"] = 4;
+            menu1["Fries"] = 3.50;
+            menu1["Soda"] = 1.50;
+            menu1["Sauerkraut"] = 1;
+
+            document.write("<ul>");
+            for (var item in menu1){
+                document.write("<li>"+ item +": $" + menu1[item]+"</li>")
+            }
+            document.write("</ul>");
+
+
+            var menu = {
+                Hotdogs: 4,
+                Fries: 3.50,
+                Soda: 1.50,
+                Sauerkraut: 1
+            }
+
+            document.write("<ul>");
+            for (var item in menu){
+                document.write("<li>"+ item +": $" + menu[item]+"</li>")
+            }
+            document.write("</ul>");
+
+            function menuItem(name, amount)
+            
+            {
+                this.item = name;
+                this.price = amount;
+            }
+
+            var menuItems = [
+                new menuItem("Hotdogs", 4),
+                new menuItem("Fries", 3.50),
+                new menuItem("Soda", 1.50),
+                new menuItem("Sauerkraut", 1)
+            ];
+
+            document.write("<ul>");
+            for (var i = 0; i < menuItems.length; i++) {
+                document.write("<li>"+ menuItems[i].item + ": $" + menuItems[i].price + "</li>");
+            }
+            document.write("</ul>");
+            
+        </script>
+    </body>
+
+</html>
+
+<!--- 
+
+Part 1:  Using an associative array (see slide 155)
+Create an associative array to store all item names and prices.  Use the array to display a “Menu” of items for 
+Joe’s hotdogs on the page.
+
+Part 2: Using an object (see slide 157)
+Redo part 1 by creating a Javascript object to store all item names and prices.  Use the object to display a “Menu” 
+of items for Joe’s hotdogs on the page.
+
+Part 3: Using a class (see slide 174)
+Redo parts 1 and 2 but  this time use a class to store all item names and prices.  The class should be created using 
+the “function” method discussed in class.  Create an array of 4 instance of the class (one for each food item) and 
+display the “Menu” of items for Joe’s hotdogs on the page.
+
+-->
