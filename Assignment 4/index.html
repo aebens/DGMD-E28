@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+    <head>
+        <title>Wordle</title>
+        <style>
+            :root {
+                font-family: 'Quicksand', sans-serif;
+            }
+
+            .board {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+                grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            .letter {
+                height: 50px;
+                border: 1px solid #000;
+                border-radius: 5px;
+                margin: 2px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+            }
+            .keyboard {
+                max-width: 400px;
+                margin: 8px auto 0;
+                font-weight: bold;
+            }
+            .keyboard-row {
+                display: flex;
+            }
+            .key {
+                flex: 1;
+                height: 40px;
+                margin: 2px;
+                border: 1px solid #000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .key.wide {
+                flex: 1.5;
+            }
+            .submit, .admin {
+                margin-top: 8px;
+                text-align: center;
+            }
+            button {
+                margin-left: 4px;
+            }
+            .correct {
+                background-color: green;
+            }
+            .wrongplace{
+                background-color: yellow;
+            }
+            .wrong{
+                background-color: gray;
+            }
+            h1 {
+                text-align: center;
+                font-size: 72px;
+            }
+            
+
+            @media (max-width: 700px) {
+                .board { max-width: 250px; }
+                .letter { height: 40px; }
+                .keyboard { max-width: 350px; }
+                .key { height: 35px; }
+            }
+
+        </style>
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    </head>
+    <body>
+        <h1>Wordle</h1>
+        <div class="board">
+            <div class="letter guess1"></div>
+            <div class="letter guess1"></div>
+            <div class="letter guess1"></div>
+            <div class="letter guess1"></div>
+            <div class="letter guess1"></div>
+            <div class="letter guess2"></div>
+            <div class="letter guess2"></div>
+            <div class="letter guess2"></div>
+            <div class="letter guess2"></div>
+            <div class="letter guess2"></div>
+            <div class="letter guess3"></div>
+            <div class="letter guess3"></div>
+            <div class="letter guess3"></div>
+            <div class="letter guess3"></div>
+            <div class="letter guess3"></div>
+            <div class="letter guess4"></div>
+            <div class="letter guess4"></div>
+            <div class="letter guess4"></div>
+            <div class="letter guess4"></div>
+            <div class="letter guess4"></div>
+            <div class="letter guess5"></div>
+            <div class="letter guess5"></div>
+            <div class="letter guess5"></div>
+            <div class="letter guess5"></div>
+            <div class="letter guess5"></div>
+            <div class="letter guess6"></div>
+            <div class="letter guess6"></div>
+            <div class="letter guess6"></div>
+            <div class="letter guess6"></div>
+            <div class="letter guess6"></div>
+        </div>
+        <div class="keyboard">
+            <div class="keyboard-row">
+                <div class="key">Q</div>
+                <div class="key">W</div>
+                <div class="key">E</div>
+                <div class="key">R</div>
+                <div class="key">T</div>
+                <div class="key">Y</div>
+                <div class="key">U</div>
+                <div class="key">I</div>
+                <div class="key">O</div>
+                <div class="key">P</div>
+            </div>
+            <div class="keyboard-row">
+                <div class="key">A</div>
+                <div class="key">S</div>
+                <div class="key">D</div>
+                <div class="key">F</div>
+                <div class="key">G</div>
+                <div class="key">H</div>
+                <div class="key">J</div>
+                <div class="key">K</div>
+                <div class="key">L</div>
+            </div>
+            <div class="keyboard-row">
+                <div class="key wide">ENTER</div>
+                <div class="key">Z</div>
+                <div class="key">X</div>
+                <div class="key">C</div>
+                <div class="key">V</div>
+                <div class="key">B</div>
+                <div class="key">N</div>
+                <div class="key">M</div>
+                <div class="key wide">&#10229;</div>
+            </div>
+        </div>
+        <div class="submit">
+            <input id="guess-input" maxlength="5" onkeydown="if(event.key === 'Enter') submitGuess()"><button onclick="submitGuess()">Check My Guess</button>
+        </div>
+        <div class="admin">
+            <button onclick="debugToggle()">Debug</button>
+            <button onclick="restart()">Restart</button>
+        </div>
+        
+        <script>
+            let answer = "";
+            let guessNumber = 1;
+            let DEBUG = false;
+
+            // Fallback word list; used for API error or new games
+            const words = [
+                "crane", "slate", "trace", "crate", "share",
+                "blaze", "flame", "gripe", "spoke", "brink",
+                "chunk", "clasp", "dwelt", "feast", "ghost",
+                "humor", "knelt", "lemon", "mango", "nerve",
+                "ocean", "plumb", "query", "ridge", "squid",
+                "thump", "upset", "vivid", "waltz", "yield",
+                "zesty", "beach", "chair", "dance", "eagle",
+                "grape", "house", "knife", "light", "mouse"
+            ];
+
+            // Picks a word from the preset word list.
+            function pickRandomWord() {
+                return words[Math.floor(Math.random() * words.length)];
+            }
+
+            // Restarts the current game and doesn't pull a new word.
+            function restart() {
+                const letters = document.querySelectorAll(".letter");
+                letters.forEach(cell => {
+                    cell.textContent = "";
+                    cell.classList.remove("correct", "wrongplace", "wrong");
+                });
+                const keys = document.querySelectorAll(".key");
+                keys.forEach(key => {
+                    key.classList.remove("correct", "wrongplace", "wrong");
+                });
+                guessNumber = 1;
+                answer = pickRandomWord();
+                debug("New word: " + answer);
+                document.getElementById("guess-input").value = "";
+            }
+
+            // Logs a console message when debugging.
+            function debug(msg) {
+                if (DEBUG) console.log(msg);
+            }
+            
+            // Change the debug status when the button is pushed.  
+            // Release the answer into the console when toggled on.
+            function debugToggle() {
+                DEBUG = !DEBUG;
+                console.log("Debug mode: " + (DEBUG ? "ON" : "OFF"));
+                if (DEBUG) console.log("Answer: " + answer);
+            }
+
+            // Get today's date as YYYY-MM-DD for the API URL
+            // Use Postman for NYT endpoint to avoid CORS error
+            // NYT Endpoint URL: https://www.nytimes.com/svc/wordle/v2/{YYYY}-{MM}-{DD}.json
+            
+            today = new Date().toISOString().slice(0, 10);
+            const url = `https://cb47ec42-51bd-426b-9b32-7eb2d3ff5054.mock.pstmn.io/svc/wordle/v2/${today}.json`;
+
+            // Get NYTimes Answer for today's Wordle
+            fetch(url)
+            .then(response => {
+                // Checks for 404 errors
+                if (!response.ok) throw new Error("API returned " + response.status);
+                return response.json();
+            })
+            .then(data => {
+                answer = data.solution;
+                debug(`Today's word loaded! It's ${answer}.`);
+            })
+            .catch(error => {
+                debug("Failed to fetch today's word: " + error);
+                // If the API fails, pick a random word from the fallback list
+                answer = pickRandomWord();
+                debug("Using fallback word: " + answer);
+            });
+
+            function submitGuess() {
+                const input = document.getElementById("guess-input");
+                // Convert to lowercase to check against API
+                const guess = input.value.toLowerCase();
+
+                // Check for length == 5, otherwise exit
+                if (guess.length !== 5) return;
+
+                // Get the 5 letter boxes for the current guess row
+                const boxes = document.querySelectorAll(`.guess${guessNumber}`);
+
+                // Test each character if correct, wrong place, or wrong.  
+                // Changes the background color to match using a class.
+                for (let i = 0; i < 5; i++) {
+                    // Displays as uppercase on the board
+                    boxes[i].textContent = guess[i].toUpperCase();
+
+                    if (guess[i] === answer[i]) {
+                        boxes[i].classList.add("correct");
+                    } else if (answer.includes(guess[i])) {
+                        boxes[i].classList.add("wrongplace");
+                    } else {
+                        boxes[i].classList.add("wrong");
+                    }
+                }
+
+                // Color the keyboard keys to match using the same class
+                const keys = document.querySelectorAll(".key");
+                for (let i = 0; i < 5; i++) {
+                    keys.forEach(key => {
+                        if (key.textContent === guess[i].toUpperCase()) {
+                            if (guess[i] === answer[i]) {
+                                key.classList.remove("wrongplace");
+                                key.classList.add("correct");
+                            } else if (answer.includes(guess[i]) && !key.classList.contains("correct")) {
+                                key.classList.add("wrongplace");
+                            } else if (!key.classList.contains("correct") && !key.classList.contains("wrongplace")) {
+                                key.classList.add("wrong");
+                            }
+                        }
+                    });
+                }
+
+                // Check for win
+                if (guess === answer) {
+                    //confetti cannon!
+                    confetti();
+
+                    alert("You win! The word was " + answer.toUpperCase());
+                    return;
+                }
+
+                // Begins next guess
+                guessNumber++;
+
+                // Check for loss (out of guesses)
+                if (guessNumber > 6) {
+                    alert("Game over! The word was " + answer.toUpperCase());
+                    return;
+                }
+
+                // Clear input and refocus
+                input.value = "";
+                input.focus();
+            }
+        </script>
+    </body>
+
+</html>
