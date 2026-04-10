@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+    <head>
+        <title>Wordle</title>
+
+        <style type="text/css">
+            :root {
+                font-family: 'Quicksand', sans-serif;
+            }
+
+            .board {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+                grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            .letter {
+                height: 50px;
+                border: 1px solid #000;
+                border-radius: 5px;
+                margin: 2px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+            }
+            .keyboard {
+                max-width: 400px;
+                margin: 8px auto 0;
+                font-weight: bold;
+            }
+            .keyboard-row {
+                display: flex;
+            }
+            .key {
+                flex: 1;
+                height: 40px;
+                margin: 2px;
+                border: 1px solid #000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .key.wide {
+                flex: 1.5;
+            }
+            .submit, .admin {
+                margin-top: 8px;
+                text-align: center;
+            }
+            button {
+                margin-left: 4px;
+            }
+            .correct {
+                background-color: green;
+            }
+            .wrongplace{
+                background-color: yellow;
+            }
+            .wrong{
+                background-color: gray;
+            }
+            h1 {
+                text-align: center;
+                font-size: 72px;
+            }
+
+            @media (max-width: 700px) {
+                .board { max-width: 250px; }
+                .letter { height: 40px; }
+                .keyboard { max-width: 350px; }
+                .key { height: 35px; }
+            }
+
+        </style>
+
+        <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    </head>
+    <body>
+        <div id="myapp"></div>  <!--place to put the React element(s) -->
+        <script>
+        var header = React.createElement("h1",{id:"main"},"Wordle");
+        const myroot= ReactDOM.createRoot(document.querySelector("#myapp"));
+        
+        // Data
+        var answer = "moody";
+        var guesses = ["might", "flood", "stray"];
+
+        // Evaluate Guesses
+
+        // Find correct letters
+        function checkGuess(guess) {
+            var result = [];
+            for (var i = 0; i < 5; i++) {
+                if (guess[i] === answer[i]) {
+                    result.push({letter: guess[i].toUpperCase(), status: "correct"});
+                } else if (answer.includes(guess[i])) {
+                    result.push({letter: guess[i].toUpperCase(), status: "wrongplace"});
+                } else {
+                    result.push({letter: guess[i].toUpperCase(), status: "wrong"});
+                }
+            }
+            return result;
+        }
+
+        // Evaluate the guesses
+        var results = [];
+        for (var i = 0; i < guesses.length; i++) {
+            results.push(checkGuess(guesses[i]));
+        }
+        
+        // Store status for the keyboard to render later [chooses the best status]
+        var keyStatuses = {};
+        for (var i = 0; i < guesses.length; i++) {
+            for (var j = 0; j < 5; j++) {
+                var letter = guesses[i][j].toUpperCase();
+                if (guesses[i][j] === answer[j]) {
+                    keyStatuses[letter] = "correct";
+                } else if (answer.includes(guesses[i][j]) && keyStatuses[letter] !== "correct") {
+                    keyStatuses[letter] = "wrongplace";
+                } else if (!keyStatuses[letter]) {
+                    keyStatuses[letter] = "wrong";
+                }
+            }
+        }
+
+        // Make Board Rows Dynamically
+        function makeRow(rowNumber) {
+            var letters = [];
+            var rowData = results[rowNumber - 1];  // converts the rows to index 0 for results array
+
+            for (var i = 0; i < 5; i++) {
+                var className = "letter guess" + rowNumber;
+                var text = "";  // new local variable to render the letter
+
+                if (rowData) {
+                    className = className + " " + rowData[i].status; // add the answer-type class 
+                    text = rowData[i].letter; // add the letter
+                }
+
+                letters.push(
+                    React.createElement("div", {
+                        className: className,
+                        key: rowNumber + "-" + i
+                    }, text)
+                );
+            }
+            return letters;
+        }
+
+        // Create the board: 6 rows, each with 5 letters
+        var rows = [];
+            for (var r = 1; r <= 6; r++) {
+                rows.push(makeRow(r));
+            }
+        
+        // Build Board div
+        var board = React.createElement("div", {className: "board"}, rows);
+        
+        // Make Keyboard Rows Dynamically
+        function makeKeyboardRow(letters) {
+            var keys = [];
+            for (var i = 0; i < letters.length; i++) {
+                var className = "key";
+                if (keyStatuses[letters[i]]) {
+                    className = className + " " + keyStatuses[letters[i]]; // add the answer-type class 
+                }
+                keys.push(
+                    React.createElement("div", {
+                        className: className,
+                        key: letters[i]
+                    }, letters[i])
+                );
+            }
+            return keys;
+        }
+
+        // Build Keyboard
+        var row1 = React.createElement("div", {className: "keyboard-row"}, makeKeyboardRow(["Q","W","E","R","T","Y","U","I","O","P"]));
+        var row2 = React.createElement("div", {className: "keyboard-row"}, makeKeyboardRow(["A","S","D","F","G","H","J","K","L"]));
+        
+        var enterKey = React.createElement("div", {className: "key wide", key: "enter"}, "ENTER");
+        var backKey = React.createElement("div", {className: "key wide", key: "back"}, "\u27F5");
+        var row3Middle = makeKeyboardRow(["Z","X","C","V","B","N","M"]);
+        var row3 = React.createElement("div", {className: "keyboard-row"}, enterKey, row3Middle, backKey);
+
+        // Build Keyboard div
+        var keyboard = React.createElement("div", {className: "keyboard"}, row1, row2, row3);
+
+        
+        // Render App
+        var app = React.createElement("div", null, header, board, keyboard);
+        myroot.render(app);
+
+        </script>
+    </body>
+</html>
