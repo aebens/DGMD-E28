@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Assignment 8 - Color Blocks</title>
+  <link rel="stylesheet" href="App.css" />
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function Block({ number, color }) {
+      const handleClick = () => {
+        alert(number);
+      };
+
+      return (
+        <div className={`block ${color}`} onClick={handleClick}>
+          {number}
+        </div>
+      );
+    }
+
+    function App() {
+      const blocks = [
+        { number: 7, color: 'black' },
+        { number: 8, color: 'mediumblue' },
+        { number: 9, color: 'crimson' },
+        { number: 4, color: 'goldenrod' },
+        { number: 5, color: 'black' },
+        { number: 6, color: 'mediumblue' },
+        { number: 1, color: 'crimson' },
+        { number: 2, color: 'goldenrod' },
+        { number: 3, color: 'black' },
+      ];
+
+      return (
+        <div className="app">
+          <h1>Color Blocks</h1>
+          <div className="blocks">
+            {blocks.map((b) => (
+              <Block key={b.number} number={b.number} color={b.color} />
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
