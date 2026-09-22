@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "repository": "aebens/DGMD-E28",
+  "policyRevision": "9394226a367fddf7026e47a2a320415159c87e03",
+  "defaultBranch": "main",
+  "productionBranch": null,
+  "requiredChecks": [],
+  "validation": {
+    "commands": [
+      {
+        "name": "policy-integrity",
+        "argv": [
+          "node",
+          ".agent-workflows/bin/workflow.mjs",
+          "verify"
+        ]
+      },
+      {
+        "name": "assignment-8-vite:lint",
+        "argv": [
+          "npm",
+          "--prefix",
+          "assignment-8-vite",
+          "run",
+          "lint"
+        ]
+      },
+      {
+        "name": "assignment-8-vite:build",
+        "argv": [
+          "npm",
+          "--prefix",
+          "assignment-8-vite",
+          "run",
+          "build"
+        ]
+      }
+    ],
+    "install": {
+      "name": "install",
+      "argv": [
+        "npm",
+        "--prefix",
+        "assignment-8-vite",
+        "ci"
+      ]
+    },
+    "dependencyFiles": [
+      "assignment-8-vite/package.json",
+      "assignment-8-vite/package-lock.json"
+    ]
+  },
+  "deployment": {
+    "provider": "unverified",
+    "previews": "on-request",
+    "productionBranchEvidence": "unverified-no-production-branch-inferred"
+  },
+  "protectedDecisions": [
+    "Preserve the separate assignment directories, submitted archives, and their requirements. The npm profile targets assignment-8-vite only; it does not cover the other coursework or authorize rewriting submitted artifacts.",
+    "Preserve the existing project-specific data, privacy, architecture, test, and deployment requirements. Workflow adoption does not grant authority for external writes or destructive operations."
+  ],
+  "validationLimitations": [
+    "Only assignment-8-vite lint/build is automated by this profile. No behavior test suite was identified there, and other assignments require their own review."
+  ]
+}
